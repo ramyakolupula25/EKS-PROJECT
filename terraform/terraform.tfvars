@@ -1,5 +1,5 @@
 aws_region          = "ap-south-1"
-aws_account_id      = "123456789012"
+aws_account_id      = "432049653779"
 ecr_repository_name = "springboot-app"
 github_org          = "Arudra20"
 github_repo         = "eks-end-to-end-pipeline"
