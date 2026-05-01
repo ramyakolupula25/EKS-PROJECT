@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # End-to-End EKS CI/CD Pipeline Repo
 
 This repo contains a complete sample setup for deploying a Spring Boot application to Amazon EKS using:
@@ -219,3 +220,7 @@ Make sure the GitHub Actions IAM role has an EKS access entry and enough namespa
 ## Interview Explanation
 
 “I created an end-to-end CI/CD pipeline for EKS. When code is pushed to GitHub, GitHub Actions builds and tests the Spring Boot application, creates a Docker image, scans it with Trivy, pushes the image to Amazon ECR, and deploys it to EKS using Helm. The application runs behind a Kubernetes Service and ALB Ingress. We use rolling updates, readiness/liveness probes, and Helm atomic deployments for safer releases. For rollback, we use Helm history and rollback or Kubernetes rollout undo.”
+=======
+# eks-end-to-end-pipeline
+eks deployment
+>>>>>>> 2442f5a4e8ad92df871c3398b3c027fde6e1676a
