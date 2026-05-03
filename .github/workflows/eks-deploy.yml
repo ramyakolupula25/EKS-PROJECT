@@ -25,10 +25,43 @@ jobs:
   build-scan-push-deploy:
     name: Build, scan, push, and deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
+
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Create and push Git tag
+        id: create_tag
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          DATE_TAG=$(date +"%Y.%m.%d-%H%M")
+          GIT_TAG="v${DATE_TAG}-${SHORT_SHA}"
+
+          echo "Creating Git tag: $GIT_TAG"
+
+          git tag -a "$GIT_TAG" -m "Release $GIT_TAG"
+          git push origin "$GIT_TAG"
+
+          echo "git_tag=$GIT_TAG" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Install GHAST
+        run: |
+          python -m pip install --upgrade pip
+          pip install ghast-scanner
+
+      - name: Run GHAST scan
+        run: |
+          ghast scan .github/workflows
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -78,7 +111,6 @@ jobs:
         run: |
           helm upgrade --install "$HELM_RELEASE_NAME" "$HELM_CHART_PATH" \
             --namespace "$NAMESPACE" \
-            --create-namespace \
             --set image.repository="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY" \
             --set image.tag="$IMAGE_TAG" \
             --atomic \
