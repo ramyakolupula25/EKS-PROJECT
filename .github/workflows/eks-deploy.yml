@@ -80,15 +80,24 @@ jobs:
           docker tag "$ECR_REPOSITORY:$IMAGE_TAG" \
             "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      # FIX 3: was @master (floating/mutable ref) — GHAST hard-fails on this.
-      # Pinned to v0.28.0 SHA for full GHAST compliance.
+      # FIX 3: trivy-action is AVOIDED entirely due to the March 2026 supply chain
+      # attack (CVE-2026-33634) which compromised tags v0.0.1-v0.34.2 and all
+      # setup-trivy versions. Installing the Trivy binary directly at a pinned
+      # safe version (v0.70.0) removes the compromised action dependency completely.
+      - name: Install Trivy (v0.70.0)
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sh -s -- -b /usr/local/bin v0.70.0
+          trivy --version
+
       - name: Scan Docker image with Trivy
-        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2  # v0.28.0
-        with:
-          image-ref: ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-          format: table
-          exit-code: '1'           # fail pipeline if CRITICAL vulns found
-          severity: CRITICAL,HIGH
+        run: |
+          trivy image \
+            --exit-code 1 \
+            --severity CRITICAL,HIGH \
+            --no-progress \
+            --format table \
+            "$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Push Docker image to ECR
         run: |
