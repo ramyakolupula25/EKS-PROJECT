@@ -9,7 +9,8 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
+  
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -29,6 +30,7 @@ jobs:
       contents: read
       security-events: write
       actions: read
+      
 
     steps:
       - name: Checkout source code
