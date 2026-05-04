@@ -27,7 +27,7 @@ jobs:
     name: Build, scan, push, and deploy
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       security-events: write
       actions: read
       
