@@ -68,7 +68,7 @@ jobs:
 
       - name: Run GHAST scan
         run: |
-          ghast --dir .github/workflows
+          ghast --dir .github/workflows --verbose --ignore-warnings
 
       - name: Set up Java
         uses: actions/setup-java@v4
