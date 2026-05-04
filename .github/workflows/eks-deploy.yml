@@ -83,7 +83,7 @@ jobs:
       # FIX 3: was @master (floating/mutable ref) — GHAST hard-fails on this.
       # Pinned to v0.28.0 SHA for full GHAST compliance.
       - name: Scan Docker image with Trivy
-        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe  # v0.28.0
+        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2  # v0.28.0
         with:
           image-ref: ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           format: table
